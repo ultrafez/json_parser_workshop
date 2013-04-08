@@ -45,6 +45,11 @@ describe JavaScriptObjectNotationParser do
 
     example do
       #pending
+      expect('{ "AbC 1dE" : "aBc 2De" }').to parse_as({ "AbC 1dE" => "aBc 2De" })
+    end
+
+    example do
+      #pending
       expect('{ "AbC_1dE" : "aBc_2De" }').to parse_as({ "AbC_1dE" => "aBc_2De" })
     end
 
@@ -71,6 +76,18 @@ describe JavaScriptObjectNotationParser do
     end
   end
 
+  describe "integer values" do
+    example do
+      #pending
+      expect('{ "a" : 1.3 }').to parse_as({ "a" => 1.3 })
+    end
+
+    example do
+      #pending
+      expect('{ "a" : 1.367 }').to parse_as({ "a" => 1.367 })
+    end
+  end
+
   # Now it gets harder
   describe "multiple member pairs" do
     example do
@@ -92,6 +109,14 @@ describe JavaScriptObjectNotationParser do
         { "a" => { "x" => "y" } }
       )
     end
+    example do
+      #pending
+      expect(
+        '{ "a" : {} }'
+      ).to parse_as(
+        { "a" => {  } }
+      )
+    end
   end
 
   # Serious extra credit!
@@ -102,32 +127,84 @@ describe JavaScriptObjectNotationParser do
     end
 
     example do
-      pending
+      #pending
       expect('{ "a" : [1] }').to parse_as({ "a" => [1] })
     end
 
     example do
-      pending
+      #pending
       expect('{ "a" : ["b"] }').to parse_as({ "a" => ["b"] })
     end
 
     example do
-      pending
+      #pending
       expect('{ "a" : [1,2,3] }').to parse_as({ "a" => [1, 2, 3] })
     end
 
     example do
-      pending
+      #pending
       expect('{ "a" : [ 1 , 2 , 3] }').to parse_as({ "a" => [1, 2, 3] })
     end
 
     example do
-      pending
+      #pending
       expect(
         '{ "a" : [1, { "b" : 2 }, 3] }'
       ).to parse_as(
         { "a" => [1, { "b" => 2 }, 3] }
       )
+    end
+  end
+
+  describe "external" do
+    example do     
+      json = <<-JSON
+      {
+          "glossary": {
+              "title": "example glossary",
+          "GlossDiv": {
+                  "title": "S",
+            "GlossList": {
+                      "GlossEntry": {
+                          "ID": "SGML",
+                "SortAs": "SGML",
+                "GlossTerm": "Standard Generalized Markup Language",
+                "Acronym": "SGML",
+                "Abbrev": "ISO 8879:1986",
+                "GlossDef": {
+                              "para": "A meta-markup language, used to create markup languages such as DocBook.",
+                  "GlossSeeAlso": ["GML", "XML"]
+                          },
+                "GlossSee": "markup"
+                      }
+                  }
+              }
+          }
+      }
+      JSON
+      object = {
+          "glossary"=> {
+              "title"=> "example glossary",
+          "GlossDiv"=> {
+                  "title"=> "S",
+            "GlossList"=> {
+                      "GlossEntry"=> {
+                          "ID"=> "SGML",
+                "SortAs"=> "SGML",
+                "GlossTerm"=> "Standard Generalized Markup Language",
+                "Acronym"=> "SGML",
+                "Abbrev"=> "ISO 8879:1986",
+                "GlossDef"=> {
+                              "para"=> "A meta-markup language, used to create markup languages such as DocBook.",
+                  "GlossSeeAlso"=> ["GML", "XML"]
+                          },
+                "GlossSee"=> "markup"
+                      }
+                  }
+              }
+          }
+      }
+      expect(json).to parse_as(object)
     end
   end
 end

@@ -3,11 +3,17 @@ grammar JavaScriptObjectNotation
 
   # Just scribbling on the blank page
   rule root
-    empty_object
-    /
-    object
-    /
-    nothing
+    blank
+    content:(
+      object
+      /
+      nothing
+    )
+    blank {
+      def to_hash
+        content.to_hash
+      end
+    }
   end
 
 
@@ -19,6 +25,12 @@ grammar JavaScriptObjectNotation
     }
   end
 
+  rule object
+    empty_object
+    /
+    non_empty_object
+  end
+
   rule empty_object
     "{" blank "}" {
       def to_hash
@@ -27,7 +39,7 @@ grammar JavaScriptObjectNotation
     }
   end
 
-  rule object
+  rule non_empty_object
     "{" head:pair tail:("," pair)* "}" {
       def to_hash
         pairs = [head] + tail.elements.map(&:pair)
@@ -37,7 +49,7 @@ grammar JavaScriptObjectNotation
   end
 
   rule pair
-    blank key:string blank ":" blank value blank {
+    blank key:string blank ":" value {
       def to_hash
         { key.to_hash => value.to_hash }
       end
@@ -45,15 +57,50 @@ grammar JavaScriptObjectNotation
   end
 
   rule value
-    string
+    blank
+    content:(
+      string
+      /
+      decimal
+      /
+      integer
+      /
+      object
+      /
+      array
+    )
+    blank {
+      def to_hash
+        content.to_hash
+      end
+    }
+  end
+
+  rule array
+    empty_array
     /
-    integer
-    /
-    object
+    non_empty_array
+  end
+
+  rule empty_array
+    "[" blank "]" {
+      def to_hash
+        []
+      end
+    }
+  end
+
+  rule non_empty_array
+    "[" head:value tail:("," value)* "]" {
+      def to_hash
+        values = [head] + tail.elements.map(&:value)
+        values.map(&:to_hash)
+      end
+    }
   end
 
   rule string
-    '"' content:[\w]+ '"' {
+    '"' content:[^\"]+ '"' {
       def to_hash
         content.text_value
       end
@@ -68,8 +115,15 @@ grammar JavaScriptObjectNotation
     }
   end
 
+  rule decimal
+    "-"? [0-9]+ "." [0-9]+ {
+      def to_hash
+        text_value.to_f
+      end
+    }
+  end
 
   rule blank
-    " "*
+    [\s]*
   end
 end
