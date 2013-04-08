@@ -16,19 +16,19 @@ describe JavaScriptObjectNotationParser do
 
   describe "getting started" do
     example do
-      pending
+      #pending
       expect('').to parse_as(:nothing)
     end
   end
 
   describe "an empty object" do
     example do
-      pending
+      #pending
       expect('{}').to parse_as({ })
     end
 
     example do
-      pending
+      #pending
       # It's not important when you do this one,
       # it's just a sanity check
       expect('{   }').to parse_as({ })
@@ -39,34 +39,34 @@ describe JavaScriptObjectNotationParser do
 
   describe "string values" do
     example do
-      pending
+      #pending
       expect('{ "a" : "b" }').to parse_as({ "a" => "b" })
     end
 
     example do
-      pending
+      #pending
       expect('{ "AbC_1dE" : "aBc_2De" }').to parse_as({ "AbC_1dE" => "aBc_2De" })
     end
 
     example do
-      pending
+      #pending
       expect('{ "a" : "b" }').to parse_as({ "a" => "b" })
     end
   end
 
   describe "integer values" do
     example do
-      pending
+      #pending
       expect('{ "a" : 1 }').to parse_as({ "a" => 1 })
     end
 
     example do
-      pending
+      #pending
       expect('{ "a" : 123 }').to parse_as({ "a" => 123 })
     end
 
     example do
-      pending
+      #pending
       expect('{ "a" : -789 }').to parse_as({ "a" => -789 })
     end
   end
@@ -74,7 +74,7 @@ describe JavaScriptObjectNotationParser do
   # Now it gets harder
   describe "multiple member pairs" do
     example do
-      pending
+      #pending
       expect(
         '{ "a" : "b" , "c" : "d" , "e" : "f" }'
       ).to parse_as(
@@ -85,7 +85,7 @@ describe JavaScriptObjectNotationParser do
 
   describe "objects as values" do
     example do
-      pending
+      #pending
       expect(
         '{ "a" : { "x" : "y"} }'
       ).to parse_as(
@@ -97,7 +97,7 @@ describe JavaScriptObjectNotationParser do
   # Serious extra credit!
   describe "arrays" do
     example do
-      pending
+      #pending
       expect('{ "a" : [] }').to parse_as({ "a" => [ ] })
     end
 

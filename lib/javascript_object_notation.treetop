@@ -2,11 +2,74 @@ grammar JavaScriptObjectNotation
   # Your solution goes here
 
   # Just scribbling on the blank page
+  rule root
+    empty_object
+    /
+    object
+    /
+    nothing
+  end
+
+
   rule nothing
     "" {
       def to_hash
-        :nowt
+        :nothing
       end
     }
+  end
+
+  rule empty_object
+    "{" blank "}" {
+      def to_hash
+        {}
+      end
+    }
+  end
+
+  rule object
+    "{" head:pair tail:("," pair)* "}" {
+      def to_hash
+        pairs = [head] + tail.elements.map(&:pair)
+        pairs.map(&:to_hash).inject({}) { | h, pair | h.merge(pair) }
+      end
+    }
+  end
+
+  rule pair
+    blank key:string blank ":" blank value blank {
+      def to_hash
+        { key.to_hash => value.to_hash }
+      end
+    }
+  end
+
+  rule value
+    string
+    /
+    integer
+    /
+    object
+  end
+
+  rule string
+    '"' content:[\w]+ '"' {
+      def to_hash
+        content.text_value
+      end
+    }
+  end
+
+  rule integer
+    "-"? [0-9]+ {
+      def to_hash
+        text_value.to_i
+      end
+    }
+  end
+
+
+  rule blank
+    " "*
   end
 end
